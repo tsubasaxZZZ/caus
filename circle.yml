@@ -3,14 +3,15 @@ machine:
     version: 3.5.0
 
 dependencies:
-  cache_directories:
-    - mongodb-linux-x86_64-ubuntu1404-3.4.1
+  override:
+    - sudo apt-get purge mongodb-org*
+    - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+    - echo "deb http://repo.mongodb.org/apt/ubuntu precise/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+    - sudo apt-get update
+    - sudo apt-get install -y mongodb-org
+    - sudo service mongod restart
 
   pre:
-    - if [[ ! -d mongodb-linux-x86_64-ubuntu1404-3.4.1 ]]; then wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1404-3.4.1.tgz && tar xvzf mongodb-linux-x86_64-ubuntu1404-3.4.1.tgz; fi
-    - sudo stop mongodb
-    - sudo cp mongodb-linux-x86_64-ubuntu1404-3.4.1/bin/* /usr/bin
-    - sudo start mongodb
     - pip install -r ./requirements.txt
     - python ./index.py:
                background: true
