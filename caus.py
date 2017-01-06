@@ -7,47 +7,41 @@ from bs4 import BeautifulSoup
 import pymongo
 from pymongo import MongoClient
 from datetime import datetime
+from libs.common import DROP_DOWN_ID, parse_drop_downlist, SERVICE_UPDATE_BASEURL, AZURE_BASEURL
 
-#DROP_DOWN_ID = {"product" : "dropdown-products", "updateType" : "dropdown-updatetype", "platform" : "dropdown-platform"}
-DROP_DOWN_ID = {"product" : "dropdown-products", "updateType" : "dropdown-updatetype"}
-MONGODB_HOST = "172.17.0.4"
+#DROP_DOWN_ID = {"product" : "dropdown-products", "updateType" : "dropdown-updatetype"}
+MONGODB_HOST = "aus-db"
 MONGODB_PORT = 27017
-
-def parse_drop_downlist():
-    '''
-    ドロップダウンリストの解析 
-    '''
-    html = requests.get("https://azure.microsoft.com/en-us/updates/").text
-    soup = BeautifulSoup(html, "html.parser")
-
-    # ドロップダウンのハッシュ
-    option_list = {}
-
-    for dropdownId in DROP_DOWN_ID.values():
-        select_html = soup.find_all("select", attrs={"id":dropdownId})[0].find_all("option")
-        option_list[dropdownId] = []
-        for option in select_html:
-            option_list[dropdownId].append(option.get("value"))
-
-    return option_list
+# スクレイピングするページ数
+MAX_PAGING = 100
 
 def get_update_list(**condition):
     '''
     Update情報の解析
     '''
-    html = requests.get("https://azure.microsoft.com/en-us/updates/", params = condition).text
+    
+    html = requests.get(SERVICE_UPDATE_BASEURL, params = condition).text
     soup = BeautifulSoup(html, "html.parser")
 
     # 1件の情報をハッシュ(投稿日,タイトル,概要,URL)として持つリスト
     update_list = []
 
-    div_serviceupdate_list = soup.find_all("div", attrs={"class" : "serviceUpdate"})
+    #div_serviceupdate_list = soup.find_all("div", attrs={"class" : "serviceUpdate"})
+    div_serviceupdate_list = soup.select('#top > div.wa-container > section > div.row.serviceUpdates-container > div.column > div.row.row-size1')
     for div_serviceupdate in div_serviceupdate_list:
+
         update_item = {}
         update_item['title'] = div_serviceupdate.h5.text
         update_item['url'] = div_serviceupdate.a['href']
-        update_item['date'] = datetime.strptime(div_serviceupdate.find_all('span', attrs={"class" : "text-slate07"})[0].text, "%B %d, %Y")
-        update_item['summary'] = div_serviceupdate.find_all('span', attrs={"class" : False})[0].text.replace('- ','')
+
+        # サマリの取得
+        summary_html = requests.get(AZURE_BASEURL + "/" + update_item['url']).text
+        summary_soup = BeautifulSoup(summary_html, "html.parser")
+        date_html = summary_soup.select('#top > div.wa-container > section.section > div.row > div.column > p')[0].text
+        update_item['date'] = datetime.strptime(date_html,"%A, %B %d, %Y")
+#        update_item['summary'] = ''.join([text.text for text in summary_soup.select('#top > div.wa-container > section.section > div.row.row-size3 > div.column.small-12.medium-9 > p')])
+#        update_item['summary'] = summary_soup.select('#top > div.wa-container > section.section > div.row.row-size3 > div.column > p')
+        update_item['summary'] = ''
         update_item['condition'] = [condition]
         update_list.append(update_item)
 
@@ -59,16 +53,13 @@ def create_updates_db(db):
     '''
     dropdown_list = parse_drop_downlist()
 
-    for dropdown_type, dropdown_listID in DROP_DOWN_ID.items():
-        for dropdown_item in dropdown_list[dropdown_listID]:
-            # ALLの時はDBへインサートはしない
-            if dropdown_item == "":
-                continue
+    for dropdown_type, dropdown_value in DROP_DOWN_ID.items():
+        for _key, _val in dropdown_list[dropdown_value].items():
 
-            print("============== {}:{} ===========".format(dropdown_type, dropdown_item))
+            print("============== {}:{}:{} ===========".format(dropdown_type, _key, _val))
 
-            for page_num in range(1, 20):
-                update_list = get_update_list(**dict({dropdown_type:dropdown_item, "page":page_num}))
+            for page_num in range(1, MAX_PAGING):
+                update_list = get_update_list(**dict({dropdown_type:_val, "page":page_num}))
                 if(len(update_list) == 0):
                     break
                 for update in update_list:
@@ -92,7 +83,10 @@ def dedup_updates_db(db):
             dup_updates['condition'].extend(updates['condition'])
             print(dup_updates)
             print("-------E-DEDUP-----------")
-        db['update_temp2'].insert(dup_updates)
+        try:
+            db['update_temp2'].insert(dup_updates)
+        except Exception as e:
+            print(e)
 
 def print_updates(db):
     collection = db['update_temp2']
@@ -107,7 +101,7 @@ if __name__ == "__main__":
     db = client.aus
 
     db['update_temp1'].create_index([("url", pymongo.DESCENDING), ("condition", pymongo.DESCENDING)], unique=True)
-    db['update_temp2'].create_index([("url", pymongo.DESCENDING), ("condition", pymongo.DESCENDING)], unique=True)
+    db['update_temp2'].create_index([("url", pymongo.DESCENDING)], unique=True)
     create_updates_db(db)
     dedup_updates_db(db)
 
