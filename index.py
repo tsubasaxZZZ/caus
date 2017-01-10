@@ -7,7 +7,7 @@ from bottle import TEMPLATE_PATH, jinja2_template as template
 import pymongo
 from pymongo import MongoClient
 import re
-from libs.common import parse_drop_downlist, DROP_DOWN_ID
+from libs.common import Util, DROP_DOWN_ID, CAUS_LOGGER
 
 # index.pyが設置されているディレクトリの絶対パスを取得
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -18,13 +18,14 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # ToDo:コンフィグ化
 MONGODB_HOST = "aus-db"
 MONGODB_PORT = 27017
-NUM_PER_PAGE = 10
+NUM_PER_PAGE = 20
 COLLECTION_NAME = 'update_temp2'
+DATABASE_NAME = 'aus-copy'
 
 @route('/')
 def servicelist():
     client = MongoClient(MONGODB_HOST, MONGODB_PORT)
-    db = client.aus
+    db = client[DATABASE_NAME]
     
 
     condition = {}
@@ -35,6 +36,17 @@ def servicelist():
         if len(query) > 0:
             # 条件式の組み立て
             condition.update({'condition.{}'.format(type_str):{'$in' :query}}) 
+
+
+    '''
+    # ORで検索
+    if condition != {}:
+        temp_arr = []
+        for k,v in condition.items():
+            temp_arr.append(dict({k:v}))
+        condition = {'$or': temp_arr}
+    # ---------
+    '''
 
     # ToDo: ログ出力
     print(condition)
@@ -67,25 +79,46 @@ def servicelist():
         
 
     # クエリの発行
-    l = list(db[COLLECTION_NAME]
+    list_db = list(db[COLLECTION_NAME]
              .find(condition)
              .sort("date", sort)
              .skip(NUM_PER_PAGE * (page - 1))
              .limit(NUM_PER_PAGE))
 
+    '''
+    #-- temp1 から抽出 --
+    list_db_by_url = [db[COLLECTION_NAME].find({'url':u['url']}) for u in list_db]
+    update_list = list()
+    from collections import deque
+    list_db_queue = deque(list_db)
+    list_db_by_url_queue = deque(list_db_by_url)
+
+    while len(list_db_queue) > 0:
+        list_db_item = list_db_queue.popleft()
+        while len(list_db_by_url_queue) > 0:
+            list_db_by_url_item = list(list_db_by_url_queue.popleft())
+            for same_url_item in list_db_by_url_item:
+                if list_db_item['url'] == same_url_item['url']:
+                    list_db_item['condition'].extend(same_url_item['condition'])
+        update_list.append(list_db_item)
+    #---------------------
+    '''
+
     # ドロップダウンリストの取得
-    dropdown_list = parse_drop_downlist()
+    util = Util(CAUS_LOGGER)
+    dropdown_list = util.get_drop_downlist()
 
     return template(
         'servicelist',
-        update_list=l,
+        update_list=list_db,
         request=request,
         pageinfo=dict({"page":page, "condition":condition, "itemnum":itemnum, "max_pagenum":max_pagenum}),
         prev_page_query = prev_page_query,
         next_page_query = next_page_query,
         product_list = dropdown_list[DROP_DOWN_ID['product']],
         updatetype_list = dropdown_list[DROP_DOWN_ID['updateType']],
-        platform_list = dropdown_list[DROP_DOWN_ID['platform']]
+        platform_list = dropdown_list[DROP_DOWN_ID['platform']],
+        service_type_list = dropdown_list['service-type']
     )
 
 @route('/static/<file_path:path>')
