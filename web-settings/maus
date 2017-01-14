@@ -1,0 +1,10 @@
+server {
+    listen       8080;
+    server_name  maus;
+    access_log   /var/log/nginx/maus.access.log;
+
+    location / {
+        include     uwsgi_params;
+        uwsgi_pass  unix:/var/run/uwsgi/maus.sock;
+    }
+}
