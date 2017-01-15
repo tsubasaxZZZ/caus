@@ -91,7 +91,7 @@ ITEM_PIPELINES = {
 
 
 MONGO_URI = "aus-db"
-MONGO_DATABASE = "aus"
+#MONGO_DATABASE = "aus"
 MONGO_COLLECTION_NAME1 = "update_temp1"
 MONGO_COLLECTION_NAME2 = "update_temp2"
 
