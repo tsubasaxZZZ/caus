@@ -1,0 +1,8 @@
+maus-web:
+  image: tsubasaxzzz/caus
+  ports:
+    - "8002:8080"
+  links:
+    - maus-mdb:aus-db
+maus-mdb:
+  image: mongo
