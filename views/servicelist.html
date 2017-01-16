@@ -28,6 +28,7 @@
 	      });
 	      $(".summary-popover").popover();
 	  });
+
 	</script>
   </head>
   <body>
@@ -94,6 +95,7 @@
 
       <table class="table table-hover">
 	<th>Title</th>
+	<th>Hotentry</th>
 	<th>Date</th>
 	<th>Product</th>
 	<th>Update Type</th>
@@ -101,6 +103,9 @@
 	{% for update in update_list %}
 	<tr>
 	  <td><a href="https://azure.microsoft.com/{{update.url}}" target="_blank">{{update.title}}</a>(<a href="javascript:void(0);" class="summary-popover" data-toggle="popover" data-content="{{update.summary}}" data-placement="right">...</a>)</td>
+	  <td>
+	    <iframe style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" height="20" width="118" src="http://widgets.getpocket.com/v1/button?v=1&count=horizontal&url=http://azure.microsoft.com{{update.url}}&src=http://azure.microsoft.com{{update.url}}"></iframe><br/>
+	  </td>
 	  <td>{{update.date.strftime('%Y-%m-%d')}}</td>
 	  <td>
 	    {% for condition in update.condition %}
