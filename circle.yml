@@ -1,4 +1,6 @@
 machine:
+  hosts:
+    aus-db: 127.0.0.1
   python:
     version: 3.5.0
 
