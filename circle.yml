@@ -21,7 +21,7 @@ test:
   override:
     - pwd ~
     - ifconfig
-    - curl http://127.0.0.1:8080/hello
+    - curl -f http://127.0.0.1:8080/hello
     - date
     - python --version
     - nosetests --with-coverage  -s
