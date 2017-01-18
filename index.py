@@ -1,5 +1,4 @@
 # -*- coding:utf-8 -*-
-
 import math
 import os
 from bottle import route, run, default_app, get, post, request, static_file
@@ -8,6 +7,10 @@ import pymongo
 from pymongo import MongoClient
 import re
 from libs.common import Util, DROP_DOWN_ID, CAUS_LOGGER
+
+from applicationinsights.requests import WSGIApplication
+from applicationinsights.logging import enable
+
 
 # index.pyが設置されているディレクトリの絶対パスを取得
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -24,6 +27,7 @@ DATABASE_NAME = 'aus-copy'
 
 @route('/')
 def servicelist():
+
     client = MongoClient(MONGODB_HOST, MONGODB_PORT)
     db = client[DATABASE_NAME]
     
@@ -131,4 +135,4 @@ if __name__ == '__main__':
 
 else:
     # uWSGIから起動した場合
-    application = default_app()
+    application = WSGIApplication('d81d5112-0abe-4629-90f6-643911773e45', default_app())
