@@ -21,8 +21,9 @@ test:
   override:
     - pwd ~
     - ifconfig
+    - curl http://127.0.0.1:8080/hello
+    - date
     - python --version
     - nosetests --with-coverage  -s
     - cd mauscraping && scrapy crawl azureupdate -a baseurl='https://azure.microsoft.com/en-us/updates/?product=&updatetype=&platform=xamarin' -s MONGO_URI=localhost
-    - curl http://127.0.0.1:8080/hello
     - exit 0
