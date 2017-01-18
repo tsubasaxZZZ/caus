@@ -15,7 +15,6 @@ dependencies:
 
   pre:
     - pip install -r ./requirements.txt
-    - echo "127.0.0.1 aus-db" >> /etc/hosts
     - python ./index.py:
                background: true
     - sleep 5
