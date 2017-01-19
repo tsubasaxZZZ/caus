@@ -90,3 +90,5 @@ ENV/
 
 *~
 *.zip
+*.test
+*.bk
