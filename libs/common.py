@@ -9,6 +9,7 @@ DROPDOWNLIST_CACHE_FILE_PATH = os.path.join(LIB_DIR, 'dropdownlist.cache')
 DROP_DOWN_ID = {"product" : "dropdown-products", "updateType" : "dropdown-updatetype", "platform" : "dropdown-platform"}
 AZURE_BASEURL = "https://azure.microsoft.com/"
 SERVICE_UPDATE_BASEURL = "https://azure.microsoft.com/en-us/updates/"
+# ToDo: 一覧にないものをOthersに出す
 SERVICE_TYPE = {'service-type': {
     'Platform' : [
         'Application Gateway',
@@ -24,6 +25,7 @@ SERVICE_TYPE = {'service-type': {
         'Key Vault',
         'Load Balancer',
         'Log Analytics',
+        'Microsoft Azure classic portal',
         'Microsoft Azure portal',
         'Recovery Manager',
         'Recovery Services',
@@ -73,7 +75,7 @@ SERVICE_TYPE = {'service-type': {
         'Multi-Factor Authentication',
         'Security Center'
     ],
-    'Data Insights' :[
+    'Data Platform' :[
         'Data Catalog',
         'Data Factory',
         'Data Lake Analytics',

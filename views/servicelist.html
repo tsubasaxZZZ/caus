@@ -59,10 +59,11 @@
 		<th>Platform</th>
 		<th>Application</th>
 		<th>ID & Security</th>
-		<th>Data Insights</th>
+		<th>Data Platform</th>
 	      </tr>
 	      <tr>
-	    {% for _service_type in ('Platform', 'Application', 'ID & Security', 'Data Insights') %}
+            <!--ToDo-->
+	    {% for _service_type in ('Platform', 'Application', 'ID & Security', 'Data Platform') %}
 	      <td>
 	    {% for _service_name in service_type_list[_service_type] %}
 	    <label><input type="checkbox" name="product" value="{{product_list[_service_name]}}" {% if product_list[_service_name] in request.query.getall("product") %}checked{% endif %}>{{_service_name}}</label><br/>
