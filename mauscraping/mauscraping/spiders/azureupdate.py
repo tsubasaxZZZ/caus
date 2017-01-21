@@ -12,6 +12,7 @@ from mauscraping.items import MauscrapingItem
 from scrapy.crawler import CrawlerProcess
 import pymongo
 from pymongo import MongoClient
+import unicodedata
 
 #DROP_DOWN_ID = {"product" : "dropdown-products"}
 
@@ -41,9 +42,6 @@ class AzureupdateSpider(Spider):
         soup = BeautifulSoup(response.body, "html.parser")
         
         div_serviceupdate_list = soup.select('#top > main.wa-container > section.section > div.row.serviceUpdates-container > div.column > div.row.row-size1')
-        print("-----------------")
-        print(div_serviceupdate_list)
-        print("-----------------")
         for div_serviceupdate in div_serviceupdate_list:
             # items.py で定義したクラス
             update_item = MauscrapingItem()            
@@ -53,6 +51,7 @@ class AzureupdateSpider(Spider):
 
             # サマリの取得
             summary_html = requests.get(AZURE_BASEURL + "/" + update_item['url']).text
+            summary_html = unicodedata.normalize('NFKC', summary_html).encode('ascii','ignore')
             summary_soup = BeautifulSoup(summary_html, "html.parser")
             date_html = summary_soup.select('#top > main.wa-container > section.section > div.row > div.column > p')[0].text
             update_item['date'] = datetime.strptime(date_html,"%A, %B %d, %Y")
@@ -88,6 +87,3 @@ class AzureupdateSpider(Spider):
 
     def errback(self, failure):
         self.logger.error("**** ERROR ****:{},{}".format(repr(failure), repr(failure.value)))
-
-        response = failure.value.response
-        yield Request(response.url, callback=self.parse_item)

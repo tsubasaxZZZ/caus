@@ -44,7 +44,7 @@ SERVICE_TYPE = {'service-type': {
         'Access Control Service',
         'App Service',
         'Application Insights',
-        'Azure IoT Hub',
+        'IoT Hub',
         'Azure Search',
         'Batch',
         'BizTalk Services',
