@@ -20,7 +20,7 @@ SERVICE_TYPE = {'service-type': {
         'Azure Resource Manager',
         'Backup',
         'Content Delivery Network',
-        'DataMarket',
+        'Marketplace',
         'ExpressRoute',
         'Key Vault',
         'Load Balancer',
