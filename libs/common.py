@@ -66,7 +66,8 @@ SERVICE_TYPE = {'service-type': {
         'Service Bus',
         'Service Fabric',
         'Stream Analytics',
-        'Visual Studio Team Services'
+        'Visual Studio Team Services',
+        'Web Apps'
     ],
     'ID & Security' : [
         'Azure Active Directory',
