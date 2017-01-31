@@ -25,7 +25,6 @@ SERVICE_TYPE = {'service-type': {
         'Key Vault',
         'Load Balancer',
         'Log Analytics',
-        'Microsoft Azure classic portal',
         'Microsoft Azure portal',
         'Recovery Manager',
         'Recovery Services',
