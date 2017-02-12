@@ -36,6 +36,7 @@ SERVICE_TYPE = {'service-type': {
         'Traffic Manager',
         'VPN Gateway',
         'Virtual Machines',
+        'Virtual Machine Scale Sets',
         'Virtual Network'
     ],
     'Application' : [
