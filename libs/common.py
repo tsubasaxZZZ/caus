@@ -26,6 +26,7 @@ SERVICE_TYPE = {'service-type': {
         'Load Balancer',
         'Log Analytics',
         'Microsoft Azure portal',
+        'Network Watcher',
         'Recovery Manager',
         'Recovery Services',
         'RemoteApp',
