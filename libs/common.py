@@ -18,6 +18,7 @@ SERVICE_TYPE = {'service-type': {
         'Azure DNS',
         'Azure DevTest Labs',
         'Azure Resource Manager',
+        'Azure Monitor',
         'Backup',
         'Content Delivery Network',
         'Marketplace',
