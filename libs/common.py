@@ -14,7 +14,7 @@ SERVICE_TYPE = {'service-type': {
     'Platform' : [
         'Application Gateway',
         'Automation',
-        'Azure Container Service',
+        'Container Service',
         'Azure DNS',
         'Azure DevTest Labs',
         'Azure Resource Manager',
@@ -52,7 +52,6 @@ SERVICE_TYPE = {'service-type': {
         'BizTalk Services',
         'Cloud Services',
         'Cognitive Services',
-        'DocumentDB',
         'Event Hubs',
         'Functions',
         'HockeyApp',
@@ -63,7 +62,6 @@ SERVICE_TYPE = {'service-type': {
         'Mobile Engagement',
         'Mobile Services',
         'Notification Hubs',
-        'Power BI Embedded',
         'Redis Cache',
         'Service Bus',
         'Service Fabric',
@@ -79,12 +77,14 @@ SERVICE_TYPE = {'service-type': {
         'Security Center'
     ],
     'Data Platform' :[
+        'Azure Cosmos DB',
         'Data Catalog',
         'Data Factory',
         'Data Lake Analytics',
         'Data Lake Store',
         'HDInsight',
         'Machine Learning',
+        'Power BI Embedded',
         'SQL Data Warehouse',
         'SQL Database',
         'SQL Server Stretch Database'
