@@ -1,0 +1,2 @@
+0 18 * * * /bin/bash /caus/trigger_nightly_build.sh tsubasaxZZZ/caus master 07e013d3909242772cfe52969dca842936f2f821 >> /var/log/circleci.log 2>&1
+0 0 * * * cd /caus/mauscraping && /usr/local/bin/scrapy crawl azureupdate >scrapy.log 2>&1
