@@ -20,7 +20,7 @@ SERVICE_TYPE = {'service-type': {
         'Azure Resource Manager',
         'Azure Monitor',
         'Backup',
-        'Content Delivery Network',
+        'Content Delivery Network (CDN)',
         'Marketplace',
         'ExpressRoute',
         'Key Vault',
