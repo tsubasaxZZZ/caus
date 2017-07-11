@@ -41,11 +41,12 @@ class AzureupdateSpider(Spider):
     def parse_item(self, response):
         soup = BeautifulSoup(response.body, "html.parser")
         
-        div_serviceupdate_list = soup.select('#top > main.wa-container > section.section > div.row.serviceUpdates-container > div.column > div.row.row-size1')
+        div_serviceupdate_list = soup.select('#top > main.wa-container > section.section > div.row.serviceUpdates-container > div.column.medium-8 > div.row.row-size1')
+        self.logger.debug(div_serviceupdate_list)
         for div_serviceupdate in div_serviceupdate_list:
             # items.py で定義したクラス
             update_item = MauscrapingItem()            
-            update_item['title'] = div_serviceupdate.h5.text
+            update_item['title'] = div_serviceupdate.h3.text
             update_item['url'] = div_serviceupdate.a['href']
             update_item['baseurl'] = response.url
 
@@ -53,7 +54,7 @@ class AzureupdateSpider(Spider):
             summary_html = requests.get(AZURE_BASEURL + "/" + update_item['url']).text
             summary_html = unicodedata.normalize('NFKC', summary_html).encode('ascii','ignore')
             summary_soup = BeautifulSoup(summary_html, "html.parser")
-            date_html = summary_soup.select('#top > main.wa-container > section.section > div.row > div.column > p')[0].text
+            date_html = summary_soup.select('#top > main.wa-container > div.section > div.row > div.column > p')[0].text
             update_item['date'] = datetime.strptime(date_html,"%A, %B %d, %Y")
 
             update_item['summary'] = ''.join([s.text for s in summary_soup.select('#top > main > section.section > div.row.row-size3 > div.column.small-12.medium-9')])
