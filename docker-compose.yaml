@@ -1,7 +1,7 @@
 maus-web:
   image: tsubasaxzzz/caus
   ports:
-    - "8002:8080"
+    - "8082:8080"
   links:
     - maus-mdb:aus-db
 maus-mdb:
