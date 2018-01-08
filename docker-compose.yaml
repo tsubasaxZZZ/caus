@@ -1,8 +1,10 @@
 maus-web:
-  image: tsubasaxzzz/caus
+  image: tsubasaxzzz/caus:latest
   ports:
     - "8082:8080"
   links:
     - maus-mdb:aus-db
+  restart: always
 maus-mdb:
   image: mongo
+  restart: always
