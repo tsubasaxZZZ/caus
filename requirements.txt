@@ -6,7 +6,7 @@ cffi==1.9.1
 click==6.7
 constantly==15.1.0
 coverage==4.3.1
-cryptography==1.7.1
+cryptography==41.0.3
 cssselect==1.0.0
 docker-py==1.10.6
 docker-pycreds==0.2.1
